@@ -1,12 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, type FormEvent } from 'react';
 import { 
   ShoppingBag, Search, X, Star, Plus, Minus, Trash2, Eye, 
-  Sparkles, Check, ArrowRight, ShieldCheck, Truck, RotateCcw, 
+  Sparkles, Check, ArrowRight, ShieldCheck, Truck,
   Heart, SlidersHorizontal, CreditCard, Tag, Globe, CheckCircle2,
   User, Lock, Mail, LayoutGrid, List, Headphones, Send, Flame
 } from 'lucide-react';
 
-const PRODUCTS = [
+// --- TYPES & INTERFACES ---
+export type Category = 'All' | 'Audio' | 'Wearables' | 'Accessories';
+export type Currency = 'USD' | 'EUR' | 'GBP';
+export type SortOption = 'featured' | 'price-low' | 'price-high' | 'rating';
+export type ViewMode = 'grid' | 'list';
+export type AuthMode = 'signin' | 'signup';
+
+export interface Product {
+  id: number;
+  name: string;
+  category: Category;
+  price: number;
+  originalPrice?: number;
+  rating: number;
+  reviews: number;
+  tag?: string;
+  colors: string[];
+  stock: number;
+  image: string;
+  description: string;
+}
+
+export interface CartItem extends Product {
+  quantity: number;
+}
+
+export interface UserProfile {
+  name: string;
+  email: string;
+}
+
+// --- SAMPLE DATA ---
+const PRODUCTS: Product[] = [
   {
     id: 1,
     name: 'Minimalist Wireless Headphones',
@@ -65,30 +97,30 @@ const PRODUCTS = [
   }
 ];
 
-export default function App() {
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState('featured');
-  const [viewMode, setViewMode] = useState('grid');
-  const [currency, setCurrency] = useState('USD');
+export default function App(): React.JSX.Element {
+  const [selectedCategory, setSelectedCategory] = useState<Category>('All');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [sortBy, setSortBy] = useState<SortOption>('featured');
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [currency, setCurrency] = useState<Currency>('USD');
 
-  const [cart, setCart] = useState([]);
-  const [wishlist, setWishlist] = useState([]);
-  const [couponCode, setCouponCode] = useState('');
-  const [discount, setDiscount] = useState(0);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [wishlist, setWishlist] = useState<number[]>([]);
+  const [couponCode, setCouponCode] = useState<string>('');
+  const [discount, setDiscount] = useState<number>(0);
 
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-  const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [authMode, setAuthMode] = useState('signin');
-  const [user, setUser] = useState(null);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [toastMessage, setToastMessage] = useState(null);
-  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState<boolean>(false);
+  const [isAuthOpen, setIsAuthOpen] = useState<boolean>(false);
+  const [authMode, setAuthMode] = useState<AuthMode>('signin');
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [newsletterEmail, setNewsletterEmail] = useState<string>('');
 
-  const currencySymbols = { USD: '$', EUR: '€', GBP: '£' };
+  const currencySymbols: Record<Currency, string> = { USD: '$', EUR: '€', GBP: '£' };
 
-  const showToast = (msg) => {
+  const showToast = (msg: string): void => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 2500);
   };
@@ -104,7 +136,7 @@ export default function App() {
     return a.id - b.id;
   });
 
-  const addToCart = (product) => {
+  const addToCart = (product: Product): void => {
     setCart((prev) => {
       const existing = prev.find((item) => item.id === product.id);
       if (existing) {
@@ -117,7 +149,7 @@ export default function App() {
     showToast(`Added "${product.name}" to cart`);
   };
 
-  const toggleWishlist = (id) => {
+  const toggleWishlist = (id: number): void => {
     setWishlist((prev) => {
       const exists = prev.includes(id);
       showToast(exists ? 'Removed from Wishlist' : 'Saved to Wishlist');
@@ -125,7 +157,7 @@ export default function App() {
     });
   };
 
-  const updateQuantity = (id, delta) => {
+  const updateQuantity = (id: number, delta: number): void => {
     setCart((prev) =>
       prev
         .map((item) => {
@@ -135,16 +167,16 @@ export default function App() {
           }
           return item;
         })
-        .filter(Boolean)
+        .filter((item): item is CartItem => item !== null)
     );
   };
 
-  const removeFromCart = (id) => {
+  const removeFromCart = (id: number): void => {
     setCart((prev) => prev.filter((item) => item.id !== id));
     showToast('Item removed from cart');
   };
 
-  const applyCoupon = () => {
+  const applyCoupon = (): void => {
     if (couponCode.toUpperCase() === 'LUMEN15') {
       setDiscount(0.15);
       showToast('🎉 15% Discount Applied!');
@@ -215,7 +247,7 @@ export default function App() {
               <Globe className="w-3.5 h-3.5 text-sky-400" />
               <select 
                 value={currency} 
-                onChange={(e) => setCurrency(e.target.value)}
+                onChange={(e) => setCurrency(e.target.value as Currency)}
                 className="bg-transparent text-slate-200 font-semibold focus:outline-none cursor-pointer"
               >
                 <option value="USD" className="bg-slate-900">USD ($)</option>
@@ -270,19 +302,13 @@ export default function App() {
         </div>
       </header>
 
-      {/* --- HERO SECTION WITH BLUE ACCENTS --- */}
+      {/* --- HERO SECTION --- */}
       <section className="relative overflow-hidden bg-gradient-to-b from-blue-950/40 via-[#070D18] to-[#070D18] border-b border-slate-800/80 pt-12 pb-20 px-4 sm:px-6 lg:px-8">
-        
-        {/* Glow ambient background effects */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-blue-600/15 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute top-10 right-10 w-72 h-72 bg-sky-500/10 rounded-full blur-[100px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
-          
-          {/* Hero Left Content Column */}
           <div className="lg:col-span-7 space-y-8 text-center lg:text-left">
-            
-            {/* Live Trending Product Pill */}
             <div className="inline-flex items-center gap-2.5 bg-slate-900/90 border border-slate-800 text-slate-200 text-xs px-3.5 py-1.5 rounded-full shadow-inner">
               <span className="flex h-2 w-2 relative">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
@@ -292,7 +318,6 @@ export default function App() {
               <span className="text-slate-400 hidden sm:inline">Active Noise Cancelling Series</span>
             </div>
 
-            {/* Main Conversion Headline */}
             <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight leading-[1.1]">
               Acoustic Precision. <br />
               <span className="bg-gradient-to-r from-blue-400 via-sky-300 to-cyan-400 bg-clip-text text-transparent">
@@ -300,12 +325,10 @@ export default function App() {
               </span>
             </h1>
 
-            {/* Subtitle */}
             <p className="text-slate-400 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed">
               Engineered with 40mm titanium drivers, custom ANC algorithms, and 30-hour playback. Experience lossless high-res audio designed for absolute immersion.
             </p>
 
-            {/* CTAs */}
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
               <button
                 onClick={() => addToCart(PRODUCTS[0])}
@@ -325,9 +348,7 @@ export default function App() {
               </button>
             </div>
 
-            {/* Authentic Social Proof & Trust Stats */}
             <div className="pt-4 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6 border-t border-slate-800/80 text-xs">
-              
               <div className="flex items-center gap-3">
                 <div className="flex -space-x-2.5 overflow-hidden">
                   <img className="inline-block h-8 w-8 rounded-full ring-2 ring-slate-900 object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Customer" />
@@ -349,15 +370,11 @@ export default function App() {
                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
                 <span>2-Year Warranty & Free Returns</span>
               </div>
-
             </div>
-
           </div>
 
-          {/* Hero Right Card */}
           <div className="lg:col-span-5 relative">
             <div className="relative bg-slate-900/90 border border-slate-800 rounded-3xl p-6 shadow-2xl backdrop-blur-xl group overflow-hidden">
-              
               <div className="absolute top-4 left-4 z-10 bg-gradient-to-r from-blue-600 to-sky-500 text-white text-[11px] font-black uppercase tracking-wider px-3 py-1 rounded-xl shadow-lg flex items-center gap-1">
                 <Flame className="w-3.5 h-3.5" /> Save $30 Today
               </div>
@@ -404,20 +421,16 @@ export default function App() {
                   </button>
                 </div>
               </div>
-
             </div>
           </div>
-
         </div>
       </section>
 
       {/* --- STORE CATALOG --- */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-1 w-full">
-        
-        {/* Controls Bar */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-10 border-b border-slate-800/80 pb-6">
           <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-            {['All', 'Audio', 'Wearables', 'Accessories'].map((cat) => (
+            {(['All', 'Audio', 'Wearables', 'Accessories'] as Category[]).map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
@@ -438,7 +451,7 @@ export default function App() {
               <span>Sort:</span>
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
+                onChange={(e) => setSortBy(e.target.value as SortOption)}
                 className="bg-transparent text-white font-semibold focus:outline-none cursor-pointer"
               >
                 <option value="featured" className="bg-slate-900">Featured</option>
@@ -465,7 +478,6 @@ export default function App() {
           </div>
         </div>
 
-        {/* Product Grid */}
         <div className={viewMode === 'grid' ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-7" : "space-y-4"}>
           {filteredProducts.map((product) => {
             const isWishlisted = wishlist.includes(product.id);
@@ -638,7 +650,7 @@ export default function App() {
             </div>
 
             <form 
-              onSubmit={(e) => {
+              onSubmit={(e: FormEvent<HTMLFormElement>) => {
                 e.preventDefault();
                 setUser({ name: authMode === 'signin' ? 'Alex Rivera' : 'New Member', email: 'user@lumen.com' });
                 setIsAuthOpen(false);
@@ -845,7 +857,7 @@ export default function App() {
             </div>
 
             <form 
-              onSubmit={(e) => {
+              onSubmit={(e: FormEvent<HTMLFormElement>) => {
                 e.preventDefault();
                 setIsCheckoutOpen(false);
                 setCart([]);
@@ -896,7 +908,7 @@ export default function App() {
               <p className="text-xs text-slate-400">Subscribe for early access to releases, sales, and weekly minimalist tech picks.</p>
             </div>
             <form 
-              onSubmit={(e) => {
+              onSubmit={(e: FormEvent<HTMLFormElement>) => {
                 e.preventDefault();
                 showToast('Thank you for subscribing!');
                 setNewsletterEmail('');
