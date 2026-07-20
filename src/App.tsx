@@ -177,11 +177,11 @@ export default function App(): React.JSX.Element {
   };
 
   const applyCoupon = (): void => {
-    if (couponCode.toUpperCase() === 'LUMEN15') {
+    if (couponCode.toUpperCase() === 'TECH15') {
       setDiscount(0.15);
       showToast('🎉 15% Discount Applied!');
     } else {
-      showToast('Invalid Coupon (Try LUMEN15)');
+      showToast('Invalid Coupon (Try TECH15)');
     }
   };
 
@@ -213,7 +213,7 @@ export default function App(): React.JSX.Element {
           </div>
           <div className="flex items-center justify-center sm:justify-end gap-3 w-full sm:w-auto text-slate-300">
             <Sparkles className="w-3.5 h-3.5 text-sky-400" />
-            <span>Use code <strong className="text-sky-300 font-bold">LUMEN15</strong> for 15% OFF</span>
+            <span>Use code <strong className="text-sky-300 font-bold">TECH15</strong> for 15% OFF</span>
           </div>
         </div>
       </div>
@@ -227,7 +227,7 @@ export default function App(): React.JSX.Element {
               <ShoppingBag className="w-5 h-5" />
             </div>
             <span className="font-black text-2xl tracking-wider bg-gradient-to-r from-white via-slate-200 to-sky-300 bg-clip-text text-transparent">
-              LUMEN.
+              TECH.LK
             </span>
           </div>
 
@@ -645,7 +645,7 @@ export default function App(): React.JSX.Element {
                 {authMode === 'signin' ? 'Welcome Back' : 'Create Account'}
               </h3>
               <p className="text-xs text-slate-400">
-                {authMode === 'signin' ? 'Enter your credentials to access your account' : 'Join LUMEN for exclusive offers and order tracking'}
+                {authMode === 'signin' ? 'Enter your credentials to access your account' : 'Join Tech.lk for exclusive offers and order tracking'}
               </p>
             </div>
 
@@ -798,7 +798,7 @@ export default function App(): React.JSX.Element {
                     <Tag className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
                     <input
                       type="text"
-                      placeholder="Promo Code (LUMEN15)"
+                      placeholder="Promo Code (TECH15)"
                       value={couponCode}
                       onChange={(e) => setCouponCode(e.target.value)}
                       className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-100 uppercase focus:outline-none focus:border-blue-500"
@@ -867,7 +867,7 @@ export default function App(): React.JSX.Element {
             >
               <div>
                 <label className="text-xs font-semibold text-slate-400 block mb-1">Email</label>
-                <input required type="email" placeholder="customer@lumen.com" className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500" />
+                <input required type="email" placeholder="customer@tech.lk" className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500" />
               </div>
 
               <div>
@@ -904,7 +904,7 @@ export default function App(): React.JSX.Element {
           
           <div className="bg-gradient-to-r from-blue-950/40 via-slate-900 to-blue-950/40 border border-slate-800 p-8 rounded-3xl flex flex-col lg:flex-row items-center justify-between gap-6">
             <div className="space-y-1 text-center lg:text-left">
-              <h3 className="text-xl font-bold text-white">Join the LUMEN Global Club</h3>
+              <h3 className="text-xl font-bold text-white">Join the Tech.lk Global Club</h3>
               <p className="text-xs text-slate-400">Subscribe for early access to releases, sales, and weekly minimalist tech picks.</p>
             </div>
             <form 
@@ -955,7 +955,7 @@ export default function App(): React.JSX.Element {
             </div>
 
             <div className="space-y-3">
-              <h4 className="font-bold text-white uppercase tracking-wider">About LUMEN</h4>
+              <h4 className="font-bold text-white uppercase tracking-wider">About Tech.lk</h4>
               <ul className="space-y-2">
                 <li><a href="#" className="hover:text-sky-400 transition">Our Craft & Design Story</a></li>
                 <li><a href="#" className="hover:text-sky-400 transition">Global Stores & Distributors</a></li>
@@ -976,7 +976,7 @@ export default function App(): React.JSX.Element {
           </div>
 
           <div className="pt-8 border-t border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <p>© 2026 LUMEN Technologies Inc. All international rights reserved.</p>
+            <p>© 2026 Tech.lk Technologies Inc. All international rights reserved.</p>
 
             <div className="flex items-center gap-3">
               <span className="bg-slate-900 border border-slate-800 px-2.5 py-1 rounded text-[10px] font-bold text-slate-300">VISA</span>
